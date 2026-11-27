@@ -322,7 +322,7 @@ def draw_weighted_chart(weighted: pd.DataFrame) -> None:
     width, height = 980, 560
     img = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(img)
-    draw.text((35, 25), "加权平均 compatibility（老师公式）", font=F_TITLE, fill=COLORS["dark"])
+    draw.text((35, 25), "Pair-weighted structural compatibility", font=F_TITLE, fill=COLORS["dark"])
     draw.text((35, 62), "Weighted percent = total compatible pairs / total comparable pairs", font=F_SMALL, fill=COLORS["muted"])
 
     left, top, right, bottom = 110, 110, 900, 445
@@ -350,7 +350,7 @@ def draw_weighted_chart(weighted: pd.DataFrame) -> None:
         draw.text((x + 8, y0 - 28), f"{value:.2f}%", font=F_HEAD, fill=color)
         x += bar_width + gap
 
-    draw.text((35, 500), "这张图回答：把所有 dataset 按 comparable pair 数加权后，三种 scoring method 的总体兼容率。", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((35, 500), "Each method is weighted by its number of comparable adjacent-window pairs.", font=F_SMALL, fill=COLORS["muted"])
     img.save(CHART_DIR / "weighted_compatibility.png")
 
 
@@ -359,8 +359,8 @@ def draw_sample_size_chart(wide: pd.DataFrame) -> None:
     width, height = 1320, 620
     img = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(img)
-    draw.text((35, 25), "各 S class 的平均 triplet sample size", font=F_TITLE, fill=COLORS["dark"])
-    draw.text((35, 62), "Sample size = n_000 + ... + n_111, 按每种 scoring method 的 S-class 分组求平均", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((35, 25), "Mean triplet sample size by S class", font=F_TITLE, fill=COLORS["dark"])
+    draw.text((35, 62), "Sample size = n_000 + ... + n_111; means are grouped by method and S class.", font=F_SMALL, fill=COLORS["muted"])
 
     left, top, right, bottom = 95, 110, 1245, 505
     all_values = [float(row[s]) for _, row in means.iterrows() for s in S_CLASSES if not pd.isna(row[s])]
@@ -396,7 +396,7 @@ def draw_sample_size_chart(wide: pd.DataFrame) -> None:
         draw.line((legend_x, yy, legend_x + 45, yy), fill=COLORS[method], width=5)
         draw.text((legend_x + 55, yy - 10), method, font=F_LABEL, fill=COLORS["dark"])
 
-    draw.text((35, 565), "读法：某条线在某个 S 类越高，说明被该方法分到这个 S 类的 triplets 平均 read/sample count 越大。", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((35, 565), "Higher values indicate larger average read counts among triplets assigned to that S class.", font=F_SMALL, fill=COLORS["muted"])
     img.save(CHART_DIR / "mean_sample_size_by_s_class.png")
 
 
@@ -404,8 +404,8 @@ def draw_relationship_chart(rel: pd.DataFrame, aggregate: pd.DataFrame) -> None:
     width, height = 1280, 680
     img = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(img)
-    draw.text((35, 25), "Valid triplets 与 comparable pairs 的关系", font=F_TITLE, fill=COLORS["dark"])
-    draw.text((35, 62), "Comparable pair 要求：同一 chromosome，且 triplet index 连续", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((35, 25), "Valid triplets and comparable adjacent-window pairs", font=F_TITLE, fill=COLORS["dark"])
+    draw.text((35, 62), "A comparable pair must share a chromosome and have consecutive triplet indices.", font=F_SMALL, fill=COLORS["muted"])
 
     left, top, right, bottom = 115, 120, 760, 590
     x_max = math.ceil(rel["Valid_Triplets"].max() / 1000) * 1000
@@ -436,7 +436,7 @@ def draw_relationship_chart(rel: pd.DataFrame, aggregate: pd.DataFrame) -> None:
     draw.text((18, 330), "Comparable", font=F_LABEL, fill=COLORS["dark"])
 
     panel_x = 835
-    draw.text((panel_x, 130), "总量拆分", font=F_HEAD, fill=COLORS["dark"])
+    draw.text((panel_x, 130), "Aggregate decomposition", font=F_HEAD, fill=COLORS["dark"])
     metrics = {row["Metric"]: row for _, row in aggregate.iterrows()}
     total_within = float(metrics["Max_Pairs_Within_Chromosomes"]["Value"])
     comparable = float(metrics["Comparable_Pairs"]["Value"])
@@ -470,8 +470,9 @@ def draw_relationship_chart(rel: pd.DataFrame, aggregate: pd.DataFrame) -> None:
         draw.text((1080, yy), f"{int(value):,}", font=F_LABEL, fill=COLORS["dark"])
         draw.text((1080, yy + 22), f"{pct:.2f}%", font=F_TINY, fill=COLORS["muted"])
 
-    draw.text((panel_x, 535), "核心关系：comparable pairs 是 valid triplets 的相邻连续子集，", font=F_SMALL, fill=COLORS["muted"])
-    draw.text((panel_x, 558), "会被 chromosome 边界和 triplet index 缺口减少。", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((panel_x, 525), "Comparable pairs are consecutive adjacent", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((panel_x, 548), "valid-triplet pairs. Chromosome boundaries", font=F_SMALL, fill=COLORS["muted"])
+    draw.text((panel_x, 571), "and triplet-index gaps reduce availability.", font=F_SMALL, fill=COLORS["muted"])
     img.save(CHART_DIR / "valid_triplets_vs_comparable_pairs.png")
 
 
