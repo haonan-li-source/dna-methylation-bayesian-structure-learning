@@ -1,0 +1,4 @@
+﻿Method,Datasets,Total_Comparable_Pairs,Total_Compatible_Pairs,Total_Incompatible_Pairs,Weighted_Compatibility_Percent,Simple_Mean_Dataset_Percent,Dataset_Median_Percent,Weighted_minus_Simple_Mean,Formula
+BIC,121,461271,404319,56952,87.653245,84.977895,83.972125,2.67535,sum_j compatible_pairs_j / sum_j comparable_pairs_j * 100
+AIC,121,461271,393285,67986,85.261159,82.382478,81.210191,2.878681,sum_j compatible_pairs_j / sum_j comparable_pairs_j * 100
+BDeu,121,461271,412145,49126,89.349862,87.598735,87.078036,1.751127,sum_j compatible_pairs_j / sum_j comparable_pairs_j * 100
